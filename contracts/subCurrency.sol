@@ -8,6 +8,7 @@ contract subcurrency{
     }
 
     User[] users;
+    uint[] phone;
 
     mapping(address => User) addressToUser;
     mapping(uint => address) phoneToAddress;
@@ -18,6 +19,7 @@ contract subcurrency{
         uint id = users.push(User(_name, 10000)) - 1;
         phoneToAddress[_phone] = msg.sender;
         addressToUser[msg.sender] = users[id];
+        phone.push(_phone);
     }
 
     function send(uint _val, uint _phone) public{
@@ -28,6 +30,9 @@ contract subcurrency{
         emit Transaction(msg.sender, _reciever, _val, now);
     }
     
+    function getPhones() external view returns(uint[]){
+        return(phone);
+    }
     
     function getDetails(uint _phone) external view returns(string, uint){
         address addr = phoneToAddress[_phone];
@@ -37,4 +42,5 @@ contract subcurrency{
     function getAddress(uint _phone) external view returns(address){
         return(phoneToAddress[_phone]);
     }
+    
 }
