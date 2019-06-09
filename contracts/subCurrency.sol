@@ -33,4 +33,8 @@ contract subcurrency{
         address addr = phoneToAddress[_phone];
         return(addressToUser[addr].userName, addressToUser[addr].balance);
     }
+    
+    function getAddress(uint _phone) external view returns(address){
+        return(phoneToAddress[_phone]);
+    }
 }
