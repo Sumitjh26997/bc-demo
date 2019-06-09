@@ -24,6 +24,7 @@ import Dashboard from './Dashboard';
 import { CoreUIIcons, Flags, FontAwesome, SimpleLineIcons } from './Icons';
 import { Alerts, Badges, Modals } from './Notifications';
 import { Login, Page404, Page500, Register } from './Pages';
+import { SendMoney } from './Trade';
 // import { ShareRecords, ViewRecords, ApplyPolicy, ViewPolicy, RevokeAccess } from './Records';
 
 
@@ -34,6 +35,7 @@ export {
   // ApplyPolicy,
   // ViewPolicy,
   // RevokeAccess,
+  SendMoney,
   CoreUIIcons,
   Page404,
   Page500,

@@ -79,27 +79,47 @@ class Register extends Component {
   SignUp(event) {
     //function handling the signup event
     event.preventDefault();
-    document.getElementById("OTP").style.display = "block";
 
     alert("In Signup");
     //getting phone number for the entered aadhaar number from firebase
     
+    this.state.web3.eth.getAccounts((error, accounts) => {
+      //get the account from metamask
+      console.log("Account:",accounts[0])
+      this.subCurrencyContract.methods.getAddress(this.state.phoneNumber).call(
+        { from: accounts[0] },
+        function(error, x) {
+          //check if account exists
+          alert(x)
+          if (error) {
+            alert("Wrong");
+            return;
+          }
+          if (x === "0x0000000000000000000000000000000000000000") {
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+              "recaptcha-container"
+            );
+            document.getElementById("OTP").style.display = "block";
 
-          window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-            "recaptcha-container"
-          );
+            //send OTP to the phone number
+            firebaseApp
+              .auth()
+              .signInWithPhoneNumber(
+                "+91" + this.state.phoneNumber,
+                window.recaptchaVerifier
+              )
+              .then(function(confirmationResult) {
+                //wait for OTP verification
+                window.confirmationResult = confirmationResult;
+              });
+          } else {
+            alert("This phone number is already registered");
+          }
+        }.bind(this)
+      );
+    });
 
-          //send OTP to the phone number
-          firebaseApp
-            .auth()
-            .signInWithPhoneNumber(
-              "+91" + this.state.phoneNumber,
-              window.recaptchaVerifier
-            )
-            .then(function(confirmationResult) {
-              //wait for OTP verification
-              window.confirmationResult = confirmationResult;
-            });
+
       
   }
 
@@ -135,20 +155,20 @@ class Register extends Component {
   validateOTP = function(event) {
     event.preventDefault();
     let calllinkPhone = this.linkPhone;
-    //calllinkPhone();
-    window.confirmationResult
-      .confirm(document.getElementById("verificationcode").value)
-      .then(
-        function(result) {
-          calllinkPhone();
-          //window.location.href = '/signin'
-          alert("success");
-        },
+    calllinkPhone();
+    // window.confirmationResult
+    //   .confirm(document.getElementById("verificationcode").value)
+    //   .then(
+    //     function(result) {
+    //       calllinkPhone();
+    //       //window.location.href = '/signin'
+    //       alert("success");
+    //     },
 
-        function(error) {
-          alert(error);
-        }
-      );
+    //     function(error) {
+    //       alert(error);
+    //     }
+    //   );
   };
 
   render() {

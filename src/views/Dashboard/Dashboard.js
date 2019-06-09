@@ -1,8 +1,6 @@
 import React, { Component, lazy, Suspense } from 'react';
 import { Link, BrowserRouter, Route, Redirect } from "react-router-dom";
 import getWeb3 from "../../Dependencies/utils/getWeb3";
-import { firebaseApp } from "../../Dependencies/firebase";
-import * as firebase from "firebase";
 import { subCurrency } from "../../contract_abi";
 
 import {

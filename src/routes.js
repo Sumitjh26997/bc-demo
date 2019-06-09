@@ -36,6 +36,7 @@ const Modals = React.lazy(() => import('./views/Notifications/Modals'));
 // const ApplyPolicy = React.lazy(() => import('./views/Records/ApplyPolicy'));
 // const ViewPolicy = React.lazy(() => import('./views/Records/ViewPolicy'));
 // const RevokeAccess = React.lazy(() => import('./views/Records/RevokeAccess'));
+const SendMoney = React.lazy(() => import('./views/Trade/SendMoney'));
 const Users = React.lazy(() => import('./views/Users/Users'));
 const User = React.lazy(() => import('./views/Users/User'));
 
@@ -43,6 +44,7 @@ const User = React.lazy(() => import('./views/Users/User'));
 const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
+  { path: '/trade/send-money', exact: true, name: 'Trade', component: SendMoney },
   // { path: '/records', exact: true, name: 'Records', component: ViewRecords },
   // { path: '/records/view-records', name: 'View Records', component: ViewRecords },
   // { path: '/records/share-records', name: 'Share Records', component: ShareRecords },
