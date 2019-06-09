@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link, BrowserRouter, Route, Redirect } from "react-router-dom";
 import { firebaseApp } from "../../../Dependencies/firebase";
 import * as firebase from "firebase";
-import {userdetails} from "../../../contract_abi";
+import {subCurrency} from "../../../contract_abi";
 import getWeb3 from "../../../Dependencies/utils/getWeb3";
 import {
   Button,
@@ -28,7 +28,8 @@ class Login extends Component {
       aadhaar: "",
       web3: null,
       phone: null,
-      seedphrase: ""
+      seedphrase: "",
+      phoneNumber: null, 
     };
     this.SignIn = this.SignIn.bind(this);
     this.verifyLogin = this.verifyLogin.bind(this);
@@ -57,33 +58,20 @@ class Login extends Component {
   }
 
   instantiateContract() {
-    //User Details contract instantiation
-    const contractAddress = userdetails.contract_address;
+    //Sub Currency Contract Instantiation
+    const subCurrencyAddress = subCurrency.contract_address
+    const ABIsubCurrency = subCurrency.abi
+    var subCurrencyContract = new this.state.web3.eth.Contract(ABIsubCurrency, subCurrencyAddress)
+    this.subCurrencyContract = subCurrencyContract
 
-    //ABI for User Details contract
-    const ABI = userdetails.abi
-
-    //initializing the contract 
-    var UserDetailsContract = new this.state.web3.eth.Contract(ABI, contractAddress);
-
-    this.UserDetailsContract = UserDetailsContract;
-    console.log("userdetails contract:" + this.UserDetailsContract);
+    console.log(this.subCurrencyContract)
+    
   }
 
   SignIn(event) {
     event.preventDefault(); //function handling the signup event
     document.getElementById("OTP").style.display = "block";
-    alert("In Signup");
-    //getting phone number for the entered aadhaar number
-    firebaseApp
-      .database()
-      .ref("/uidai/")
-      .orderByChild("aadhaar_no")
-      .equalTo(this.state.aadhaar)
-      .once("value")
-      .then(function(snapshot) {
-        snapshot.forEach(function(child) {
-          var value = child.val();
+    alert("In SignIn");
 
           window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
             "recaptcha-container"
@@ -93,15 +81,14 @@ class Login extends Component {
           firebaseApp
             .auth()
             .signInWithPhoneNumber(
-              "+91" + value.phone,
+              "+91" + this.state.phoneNumber,
               window.recaptchaVerifier
             )
             .then(function(confirmationResult) {
               //wait for OTP verification
               window.confirmationResult = confirmationResult;
             });
-        });
-      });
+
   }
 
   //link aadhaar to account address using Smart Contract
@@ -109,7 +96,7 @@ class Login extends Component {
     this.state.web3.eth.getAccounts((error, accounts) => {
       //get the account from metamask
       console.log("Account:",accounts[0])
-      this.UserDetailsContract.methods.login(this.state.aadhaar).call(
+      this.subCurrencyContract.methods.getAddress(this.state.phoneNumber).call(
         { from: accounts[0] },
         function(error, x) {
           //check if account exists
@@ -117,32 +104,11 @@ class Login extends Component {
             alert("Wrong");
             return;
           }
-          if (x === true) {
+          if (x === accounts[0]) {
             alert("Login Successfull");
+            sessionStorage.setItem('phoneNumber', this.state.phoneNumber)
+            this.props.history.push("/dashboard");
             //get address from aadhaar number
-            this.UserDetailsContract.methods
-              .getAddress(this.state.aadhaar)
-              .call(
-                { from: accounts[0] },
-                function(error, add) {
-                  //get account address from SC
-                  if (error) {
-                    alert("Wrong");
-                    return;
-                  }
-                  if (add === accounts[0]) {
-                    alert("Login Successfull");
-
-                    //setting a key value pair ::>> "aadhaar" : this.state.aadhaar
-                    sessionStorage.setItem("aadhaar", this.state.aadhaar);
-                    this.props.history.push("/dashboard");
-
-                    //this.props.dispatch(logUser(this.state.aadhaar))    //if login successful then store aadhaar in app state
-                  } else {
-                    alert("Details Incorrect");
-                  }
-                }.bind(this)
-              );
           } else {
             alert("Details Incorrect");
           }
@@ -173,7 +139,7 @@ class Login extends Component {
 
   render() {
     //checking if already logged in and redirecting to /dashboard (2 ways)
-    if (sessionStorage.getItem("aadhaar") !== null)
+    if (sessionStorage.getItem("phoneNumber") !== null)
       //return (window.location.href = "/dashboard");
       this.props.history.push("/dashboard");
     return (
@@ -188,22 +154,21 @@ class Login extends Component {
                       <h1>Login</h1>
                       <p className="text-muted">Sign In to your account</p>
                       <InputGroup className="mb-3">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="icon-user" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input
-                          type="text"
-                          placeholder="Aadhaar Number"
-                          pattern=".{10,10}"
-                          min="0000000001"
-                          autoComplete="username"
-                          onChange={event =>
-                            this.setState({ aadhaar: event.target.value })
-                          }
-                          required={true}
-                        />
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="icon-user" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        type="text"
+                        placeholder="Phone Number"
+                        pattern=".{10,10}"
+                        min="0000000001"
+                        onChange={event =>
+                          this.setState({ phoneNumber: event.target.value })
+                        }
+                        required={true}
+                      />
                       </InputGroup>
                       <Row>
                         <Col xs="12" sm="12">
