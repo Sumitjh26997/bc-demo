@@ -3,7 +3,7 @@ import { Link, browserHistory } from "react-router-dom";
 import { firebaseApp } from "../../../Dependencies/firebase";
 import * as firebase from "firebase";
 import getWeb3 from "../../../Dependencies/utils/getWeb3";
-import {userdetails} from "../../../contract_abi";
+import {subCurrency} from "../../../contract_abi";
 import { registerkey } from "../../../Dependencies/pgp";
 import { Button, Card, CardBody, CardFooter, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from "reactstrap";
 
@@ -15,17 +15,17 @@ class Register extends Component {
     //initializing state of the component
     this.state = {
       //declaring state variables
-      aadhaar: "",
       web3: null,
       currentAddress: null,
       phone: null,
       seedphrase: "",
-      phoneNumber: null, 
+      phoneNumber: null,
+      userName: "" 
     };
 
     //binding functions
     this.SignUp = this.SignUp.bind(this);
-    this.linkAadhaar = this.linkAadhaar.bind(this);
+    this.linkPhone = this.linkPhone.bind(this);
     this.validateOTP = this.validateOTP.bind(this);
   }
 
@@ -54,20 +54,13 @@ class Register extends Component {
   }
 
   instantiateContract() {
-    //contract address for user details contract
-    const contractAddress = userdetails.contract_address;
+    //Sub Currency Contract Instantiation
+    const subCurrencyAddress = subCurrency.contract_address
+    const ABIsubCurrency = subCurrency.abi
+    var subCurrencyContract = new this.state.web3.eth.Contract(ABIsubCurrency, subCurrencyAddress)
+    this.subCurrencyContract = subCurrencyContract
 
-    //ABI for UserDetails contract
-    const ABI = userdetails.abi
-    
-    //instatiate UserDetails Contract
-    var UserDetailsContract = new this.state.web3.eth.Contract(
-      ABI,
-      contractAddress
-    );
-    
-    this.UserDetailsContract = UserDetailsContract;
-    console.log("contract:" + this.UserDetailsContract);
+    console.log(this.subCurrencyContract)
     
     //getting active account from metamask
     this.state.web3.eth.getAccounts((error, accounts) => {
@@ -111,55 +104,43 @@ class Register extends Component {
   }
 
   //link aadhaar to account address using Smart Contract
-  linkAadhaar() {
+  linkPhone() {
 
     //getting active account from metamask
     this.state.web3.eth.getAccounts((error, accounts) => {
       alert(accounts[0])
       //call registerKey function from pgp.js
-      registerkey(
-        accounts[0],
-        this.state.seedphrase,
-        function(ipfsHash) {
-          console.log("callback ipfs: " + ipfsHash);
-          alert("callback ipfs: " + ipfsHash);
-          alert(accounts[0]);
-          console.log(this.UserDetailsContract);
-
-          //transaction to link aadhaar card to address
-          this.UserDetailsContract.methods
-            .link(this.state.aadhaar, ipfsHash)
-            .send(
-              {
-                from: accounts[0],
-                gasPrice: this.state.web3.utils.toHex(
-                  this.state.web3.utils.toWei("0", "gwei")
-                )
-              },
-              function(error, txHash) {
-                if (!error) {
-                  console.log("tx: " + txHash);
-                  alert("Transaction Hash:" + txHash);
-                  alert("Registered Successfully");
-                  window.location.reload(true);   //if transaction successful then refresh the page
-                } else console.log(error);
-              }
-            );
-        }.bind(this)
-      );
+      this.subCurrencyContract.methods
+      .register(this.state.userName, this.state.phoneNumber)
+      .send(
+        {
+          from: accounts[0],
+          gasPrice: this.state.web3.utils.toHex(this.state.web3.utils.toWei("0", "gwei"))
+        },
+        function(error, txHash) {
+          if (!error) {
+            console.log("tx: " + txHash);
+            alert("Transaction Hash:" + txHash);
+            alert("Registered Successfully");
+            window.location.reload(true);
+          } 
+          else 
+            console.log(error);
+        }
+      )
     });
   }
 
-  //confirm OTP function and call to linkAadhaar function
+  //confirm OTP function and call to linkPhone function
   validateOTP = function(event) {
     event.preventDefault();
-    let callLinkAadhaar = this.linkAadhaar;
-    //callLinkAadhaar();
+    let calllinkPhone = this.linkPhone;
+    //calllinkPhone();
     window.confirmationResult
       .confirm(document.getElementById("verificationcode").value)
       .then(
         function(result) {
-          callLinkAadhaar();
+          calllinkPhone();
           //window.location.href = '/signin'
           alert("success");
         },
@@ -194,16 +175,33 @@ class Register extends Component {
                       </InputGroupAddon>
                       <Input
                         type="text"
-                        placeholder="Aadhaar Number"
+                        placeholder="Enter your Name"
                         autoComplete="username"
                         onChange={event =>
-                          this.setState({ aadhaar: event.target.value })
+                          this.setState({ userName: event.target.value })
+                        }
+                        required={true}
+                      />
+                    </InputGroup>
+                    <InputGroup className="mb-3">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="icon-user" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input
+                        type="text"
+                        placeholder="Phone Number"
+                        pattern=".{10,10}"
+                        min="0000000001"
+                        onChange={event =>
+                          this.setState({ phoneNumber: event.target.value })
                         }
                         required={true}
                       />
                     </InputGroup>
 
-                    <InputGroup className="mb-3">
+                    {/* <InputGroup className="mb-3">
                       <InputGroupAddon addonType="prepend">
                         <InputGroupText>
                           <i className="icon-lock" />
@@ -218,7 +216,7 @@ class Register extends Component {
                         }
                         required={true}
                       />
-                    </InputGroup>
+                    </InputGroup> */}
 
                     <Button color="success" type="submit" block>
                       Get OTP
