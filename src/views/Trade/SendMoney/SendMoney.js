@@ -41,6 +41,7 @@ export class SendMoney extends Component {
       appliedAddress: '',
       policyDetails: [],
       policyContract: null,
+      set:0,
     };
 
     this.userPopulate = this.userPopulate.bind(this);
@@ -333,8 +334,11 @@ export class SendMoney extends Component {
 
     var table = document.getElementById("user");
 
-    var header = table.createTBody();
+    var header = table.getElementsByTagName('tbody')[0]
 
+    // var header = table.createTBody();
+    if(this.state.set == 1)
+      header.deleteRow(0);
     // Create an empty <tr> element and add it to the 1st position of the table:
     var row = header.insertRow(0);
 
@@ -396,7 +400,9 @@ export class SendMoney extends Component {
 
                     <Col xs="12" md="6">
                       <Input type="select" required={true} defaultValue="no-value" onChange={event => {
-                        this.setState({ userSelected: event.target.value })
+                        this.setState({ userSelected: event.target.value,
+                                        set:1
+                                      })
                         this.getUserDetails(event.target.value)
                       }}>
                         <option value="no-value" disabled>Select User</option>
@@ -415,9 +421,9 @@ export class SendMoney extends Component {
    
                       </tr>
                     </thead>
-                    {/* <tbody>
-                      {this.showPolicies(this.state.userSelected, this.state.selectedUserDetails)}
-                    </tbody> */}
+                    <tbody>
+                      {/* {this.showPolicies(this.state.userSelected, this.state.selectedUserDetails)} */}
+                    </tbody>
                   </Table>
                   <Form
                       onSubmit={this.sendMoney}   
@@ -425,31 +431,35 @@ export class SendMoney extends Component {
                       id="amountForm"
                       style={{display:"none"}}
                   >
-                    <Table>
-                      <tr>
-                        <td><Label><b>Enter amount to be sent: </b></Label></td>
-                        <td>
-                          <Input
-                            style={{border:'1px solid red',backgroundColor:'#f0f3f5'}}
-                            type="text"
-                            pattern=".{0,6}"
-                            min="0"
-                            onChange={event => this.setState({ amount: event.target.value })}          
-                            required={true}      
-                          />
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <Button 
-                            className="btn-facebook mb-1" block
-                            block color="primary" 
-                            size="sm"
-                            type="submit"
-                            ><b><span>Send</span></b>
-                          </Button>
-                        </td>
-                      </tr>
+                    <Table responsive striped>
+                      <tbody>
+                        <tr>
+                          <td><Label><b>Enter amount to be sent: 
+                            </b></Label>                          
+                            <Input
+                              style={{border:'1px solid red',backgroundColor:'#f0f3f5',display:"inline",width:"20%"}}
+                              type="text"
+                              pattern=".{0,6}"
+                              min="0"
+                              onChange={event => this.setState({ amount: event.target.value })}          
+                              required={true}      
+                            /></td>
+                          <td>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <Button
+                              style={{width:"20%"}} 
+                              className="btn-facebook mb-1" block
+                              block color="primary" 
+                              size="md"
+                              type="submit"
+                              ><b><span>Send</span></b>
+                            </Button>
+                          </td>
+                        </tr>
+                      </tbody>
                     </Table>                         
                   </Form>
                 </CardBody>
