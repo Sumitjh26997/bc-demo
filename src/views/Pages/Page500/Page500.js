@@ -10,6 +10,7 @@ import {
   Row
 } from "reactstrap";
 import getWeb3 from "../../../Dependencies/utils/getWeb3";
+import {subCurrency} from "../../../contract_abi";
 import Tables from "../../Base/Tables/Tables";
 import Cards from "../../Base/Cards/Cards";
 
@@ -42,98 +43,9 @@ class Page500 extends Component {
       });
   }
   instantiateContract() {
-    const contractAddress = "0x78478e7666bcb38b2ddeddfe7cb0ba152301df07";
-
-    const ABI = [
-      {
-        constant: true,
-        inputs: [{ name: "_aadhaar", type: "uint256" }],
-        name: "login",
-        outputs: [{ name: "", type: "bool" }],
-        payable: false,
-        stateMutability: "view",
-        type: "function"
-      },
-      {
-        constant: true,
-        inputs: [{ name: "", type: "uint256" }],
-        name: "aadhaarToAddress",
-        outputs: [{ name: "", type: "address" }],
-        payable: false,
-        stateMutability: "view",
-        type: "function"
-      },
-      {
-        constant: false,
-        inputs: [{ name: "_ipfskey", type: "string" }],
-        name: "keymap",
-        outputs: [],
-        payable: false,
-        stateMutability: "nonpayable",
-        type: "function"
-      },
-      {
-        constant: false,
-        inputs: [
-          { name: "_aadhaar", type: "uint256" },
-          { name: "_ipfskey", type: "string" }
-        ],
-        name: "link",
-        outputs: [],
-        payable: false,
-        stateMutability: "nonpayable",
-        type: "function"
-      },
-      {
-        constant: true,
-        inputs: [{ name: "", type: "address" }],
-        name: "addressToAadhaar",
-        outputs: [{ name: "", type: "uint256" }],
-        payable: false,
-        stateMutability: "view",
-        type: "function"
-      },
-      {
-        constant: true,
-        inputs: [{ name: "_aadhaar", type: "uint256" }],
-        name: "getAddress",
-        outputs: [{ name: "", type: "address" }],
-        payable: false,
-        stateMutability: "view",
-        type: "function"
-      },
-      {
-        constant: true,
-        inputs: [{ name: "", type: "address" }],
-        name: "ownerToKey",
-        outputs: [{ name: "", type: "string" }],
-        payable: false,
-        stateMutability: "view",
-        type: "function"
-      },
-      {
-        anonymous: false,
-        inputs: [
-          { indexed: false, name: "_address", type: "address" },
-          { indexed: false, name: "_aadhaar", type: "uint256" }
-        ],
-        name: "addressLinked",
-        type: "event"
-      },
-      {
-        anonymous: false,
-        inputs: [
-          { indexed: false, name: "_address", type: "address" },
-          { indexed: false, name: "_ipfshash", type: "string" }
-        ],
-        name: "keyLinked",
-        type: "event"
-      }
-    ];
 
     const UserDetailsContract = new this.state.web3.eth.Contract(
-      ABI,
-      contractAddress
+      subCurrency.abi, subCurrency.contract_address
     );
     UserDetailsContract.getPastEvents(
       "AllEvents",
@@ -182,7 +94,7 @@ class Page500 extends Component {
             {this.state.events[i].returnValues[0]}&nbsp; ==>&nbsp;
             {this.state.events[i].returnValues[1]})
           </td>
-          <td>{this.state.events[i].type}</td>
+          <td>{this.state.events[i].returnValues[2]}</td>
           {/* <td>{}</td> */}
         </tr>
       );
@@ -198,7 +110,7 @@ class Page500 extends Component {
           <Col xs="12" lg="12">
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify" /> Striped Table
+                <i className="fa fa-align-justify" /> Explorer
               </CardHeader>
               <CardBody>
                 <Table responsive striped>
@@ -206,7 +118,7 @@ class Page500 extends Component {
                     <tr>
                       <th>blockNumber</th>
                       <th>event</th>
-                      <th>Status</th>
+                      <th>Amount(in Krupees)</th>
                     </tr>
                   </thead>
                   <tbody>{this.createTable()}</tbody>
