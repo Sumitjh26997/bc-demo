@@ -155,20 +155,20 @@ class Register extends Component {
   validateOTP = function(event) {
     event.preventDefault();
     let calllinkPhone = this.linkPhone;
-    //calllinkPhone();
-    window.confirmationResult
-      .confirm(document.getElementById("verificationcode").value)
-      .then(
-        function(result) {
-          calllinkPhone();
-          //window.location.href = '/signin'
-          alert("success");
-        },
+    calllinkPhone();
+    // window.confirmationResult
+    //   .confirm(document.getElementById("verificationcode").value)
+    //   .then(
+    //     function(result) {
+    //       calllinkPhone();
+    //       //window.location.href = '/signin'
+    //       alert("success");
+    //     },
 
-        function(error) {
-          alert(error);
-        }
-      );
+    //     function(error) {
+    //       alert(error);
+    //     }
+    //   );
   };
 
   render() {

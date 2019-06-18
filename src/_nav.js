@@ -24,6 +24,12 @@ export default {
       url: '/trade/send-money',
       icon: 'icon-drop',
     },
+    {
+      name: 'View Transactions',
+      url: '/trade/view-transactions',
+      icon: 'icon-drop',
+    },
+
     // {
     //   title: true,
     //   name: 'Records',
