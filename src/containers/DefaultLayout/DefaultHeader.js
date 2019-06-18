@@ -23,27 +23,25 @@ class DefaultHeader extends Component {
       <React.Fragment>
         <AppSidebarToggler className="d-lg-none" display="md" mobile />
         <AppNavbarBrand
-          full={{ src: logo, width: 60, height: 60, alt: 'LifeBlocks Logo' }}
-          minimized={{ src: sygnet, width: 30, height: 30, alt: 'CoreUI Logo' }}
+          full={{ src: logo, width: 100, height: 60, alt: 'LifeBlocks Logo' }}
+          minimized={{ src: sygnet, width: 30, height: 30, alt: 'LifeBlocks Logo' }}
         />
         <AppSidebarToggler className="d-md-down-none" display="lg" />
-
-        {/* <Nav className="d-md-down-none" navbar>
+        
+        
+        <Nav className="d-md-down-none" >
           <NavItem className="px-3">
-            <NavLink href="/">Dashboard</NavLink>
+          <h2 style={{display:'inline-block',float:'left',fontFamily:'Courier New',marginTop:'2%'}}>
+            Blockchain for Chartered Accountants
+          </h2>
           </NavItem>
-          <NavItem className="px-3">
-            <Link to="/users">Users</Link>
-          </NavItem>
-          <NavItem className="px-3">
-            <NavLink href="#">Settings</NavLink>
-          </NavItem>
-        </Nav> */}
+        </Nav>
         <Nav className="ml-auto" navbar>
           <NavItem className="d-md-down-none">
             {/* <NavLink href="#"><i className="icon-bell"></i><Badge pill color="danger">5</Badge></NavLink> */}
           </NavItem>
-         
+          <NavItem>
+          </NavItem>
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
               <img src={'../../assets/img/favicon.png'} className="img-avatar" alt="admin@bootstrapmaster.com" />

@@ -33,22 +33,12 @@ export class SendMoney extends Component {
       userSelected: null,
       myBalance: null,
       amount: null,
-      insuranceAdds: [],
-      insuranceCompanies: [],
-      insurancePolicies: [],
-      insuranceAddress: null,
-      insuranceName: null,
-      appliedAddress: '',
-      policyDetails: [],
-      policyContract: null,
       set:0,
     };
 
     this.userPopulate = this.userPopulate.bind(this);
     this.getUserDetails = this.getUserDetails.bind(this);
     this.sendMoney = this.sendMoney.bind(this);
-    // this.showPolicies = this.showPolicies.bind(this);
-    // this.getPolicyTemplates = this.getPolicyTemplates.bind(this);
   }
 
 
@@ -145,7 +135,7 @@ export class SendMoney extends Component {
     })
   }
 
-  //populate the insurance companies drop down menu
+  //populate the user list drop down menu
   userPopulate(phoneNumberDetails) {
     
     const rows = phoneNumberDetails.map((row, index) => {
@@ -159,175 +149,6 @@ export class SendMoney extends Component {
     //return the table of records
     return rows
   }
-
-
-  //fetch the policy templates based on the insurance company selected by the user
-  // async getPolicyTemplates(insAdd) {
-  //   console.log("in in in in")
-  //   if (insAdd) {
-  //     this.setState({ insuranceAddress: insAdd })
-  //     this.orgContract.methods.returnAllPolicy(insAdd).call(
-  //       { from: this.state.account }, (error, policies) => {
-  //         if (!error) {
-
-  //           this.setState({
-  //             insurancePolicies: policies
-  //           })
-
-  //         }
-  //       }).then(policies => {
-
-  //         const lengthp = policies.length
-
-  //         if (lengthp > 0) {
-
-  //           var policyTemplateABI = policyTemplate.abi
-
-  //           let myarray = []
-  //           for (let i = 0; i < policies.length; i++) {
-  //             console.log("in ", policies[i], " length:", lengthp)
-  //             var policyTemplateContractAddress = policies[i]
-  //             var policyTemplateContract = new this.state.web3.eth.Contract(policyTemplateABI, policyTemplateContractAddress)
-
-
-  //             policyTemplateContract.methods.getPolicyDetails().call(
-  //               { from: this.state.account }, function (error, y) {
-
-  //                 let obj = {
-
-  //                 }
-  //                 obj['coverage'] = y[0]
-  //                 obj['policyName'] = y[1]
-
-
-  //                 //push the record object into array of objects                        
-  //                 myarray.push(obj)
-  //                 // console.log(myarray)
-  //                 this.setState({
-  //                   policyDetails: myarray
-  //                 }, () => {
-  //                   console.log(this.state.policyDetails)
-  //                 })
-  //               }.bind(this))
-  //           }
-  //         }
-
-  //       })
-  //   }
-
-  // }
-
-  // //display policies based on the insurance company selected 
-  // showPolicies(policies, details) {
-  //   if (policies.length != details.length)
-  //     return;
-  //   console.log("inside")
-  //   const rows = policies.map((row, index) => {
-  //     return (
-  //       <tr key={index}>
-
-  //         <td>{row}</td>
-  //         <td>{details[index].policyName}</td>
-  //         <td>{details[index].coverage} ether</td>
-
-  //         <td>
-  //           <Button
-
-  //             block color="primary"
-  //             size="lg"
-  //             value={row}
-  //             onClick={
-  //               () => {
-  //                 this.setState({ appliedAddress: row }, () => {
-  //                   this.SendMoney()
-  //                 })
-  //               }
-  //             }
-  //           ><b>Apply</b></Button></td>
-  //       </tr>
-
-  //     );
-
-  //   });
-
-  //   //return the table of records
-  //   return rows
-  // }
-
-
-
-  // SendMoney() {
-
-  //   console.log("Insurance address:", this.state.insuranceAddress)
-  //   sessionStorage.setItem('addressCompany', this.state.insuranceAddress)
-  //   sessionStorage.setItem('policyState', 0)            
-
-  //   this.state.web3.eth.getAccounts((error, accounts) => {
-  //     //get the account from metamask
-  //     this.UserContract.methods.login(sessionStorage.getItem('aadhaar')).call(
-  //       { from: accounts[0] },
-  //       (error, x) => {
-  //         //check if account exists
-  //         if (error) {
-  //           alert("Wrong");
-  //           return;
-  //         }
-  //         if (x === true) {
-  //           //get address from aadhaar number
-  //           this.UserContract.methods
-  //             .getAddress(sessionStorage.getItem('aadhaar'))
-  //             .call(
-  //               { from: accounts[0] },
-  //               (error, add) => {
-  //                 //get account address from SC
-  //                 if (error) {
-  //                   alert("Wrong Details");
-  //                   return;
-  //                 }
-
-  //                 //if account is valid
-  //                 if (add === accounts[0]) {
-
-  //                   var policyTemplateContractAddress = this.state.appliedAddress
-  //                   var policyTemplateABI = policyTemplate.abi
-  //                   var policyTemplateContract = new this.state.web3.eth.Contract(policyTemplateABI, policyTemplateContractAddress)
-  //                   this.policyTemplateContract = policyTemplateContract
-  //                   console.log(this.policyTemplateContract)
-
-  //                   //Creating the policy contract
-  //                   this.policyTemplateContract.methods.newPolicy(sessionStorage.getItem('aadhaar')).send(
-  //                     {
-  //                       from: accounts[0],
-  //                       gasPrice: this.state.web3.utils.toHex(this.state.web3.utils.toWei('0', 'gwei')),
-  //                       value: this.state.web3.utils.toHex(this.state.web3.utils.toWei('1', 'ether'))
-  //                     }).then((policyContractInstance) => {
-  //                       console.log("Policy:", policyContractInstance)
-
-  //                       this.UserContract.methods
-  //                         .getPolicyMap(sessionStorage.getItem('aadhaar'))
-  //                         .call(
-  //                           { from: accounts[0] },
-  //                           (error, policyAdd) => {
-  //                             this.setState({ policyContract: policyAdd })
-  //                             sessionStorage.setItem('addressPolicy', policyAdd)
-  //                           }
-  //                         )
-
-  //                     })
-  //                 } else {
-  //                   alert("Details Incorrect");
-  //                 }
-  //               }
-  //             );
-  //         } else {
-  //           alert("Details Incorrect");
-  //         }
-  //       }
-  //     );
-  //   });
-
-  // }
-
 
   getUserDetails(index) {
     console.log(this.state.phoneNumbersDetails[index].name)
@@ -393,7 +214,9 @@ export class SendMoney extends Component {
               <Card>
 
                 <CardHeader>
-                  <strong>User List <b id="policy" style={{display:"inline-block",color:"green",float:"right"}}>My Balance: Rs.{this.state.myBalance} </b></strong>
+                  <h3>
+                    <strong>User List <b id="policy" style={{display:"inline-block",color:"green",float:"right"}}>My Balance: Rs.{this.state.myBalance} </b></strong>
+                  </h3>
                 </CardHeader>
                 <CardBody>
                   <FormGroup row>
@@ -434,8 +257,8 @@ export class SendMoney extends Component {
                     <Table responsive striped>
                       <tbody>
                         <tr>
-                          <td><Label><b>Enter amount to be sent: 
-                            </b></Label>                          
+                          <td><Label><b>Enter amount to be sent  : 
+                            </b></Label>&nbsp;&nbsp;                          
                             <Input
                               style={{border:'1px solid red',backgroundColor:'#f0f3f5',display:"inline",width:"20%"}}
                               type="text"
