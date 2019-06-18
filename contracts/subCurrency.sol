@@ -43,4 +43,9 @@ contract subcurrency{
         return(phoneToAddress[_phone]);
     }
     
+    function getNames(address _userAdd) external view returns(string) {
+        string name = addressToUser[_userAdd].userName;
+        return(name);
+    }
+    
 }
