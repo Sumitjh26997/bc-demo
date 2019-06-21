@@ -75,7 +75,7 @@ class Login extends Component {
 
           window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
             "recaptcha-container",{
-              //'size' : 'invisible'
+              'size' : 'invisible'
             }
           );
 
@@ -123,20 +123,20 @@ class Login extends Component {
   validateOTP = function(event) {
     event.preventDefault();
     let verifyLogin = this.verifyLogin;
-     verifyLogin()
-    // window.confirmationResult
-    //   .confirm(document.getElementById("verificationcode").value)
-    //   .then(
-    //     function(result) {
-    //       verifyLogin();
-    //       //window.location.href = '/signin'
-    // //       alert("success");
-    //     },
+     //verifyLogin()
+    window.confirmationResult
+      .confirm(document.getElementById("verificationcode").value)
+      .then(
+        function(result) {
+          verifyLogin();
+          //window.location.href = '/signin'
+    //       alert("success");
+        },
 
-    //     function(error) {
-    //       alert(error);
-    //     }
-    //   );
+        function(error) {
+          alert(error);
+        }
+      );
   };
 
   render() {
