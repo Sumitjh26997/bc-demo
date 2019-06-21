@@ -71,10 +71,12 @@ class Login extends Component {
   SignIn(event) {
     event.preventDefault(); //function handling the signup event
     document.getElementById("OTP").style.display = "block";
-    alert("In SignIn");
+    //alert("In SignIn");
 
           window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-            "recaptcha-container"
+            "recaptcha-container",{
+              //'size' : 'invisible'
+            }
           );
 
         //send OTP to the phone number
@@ -101,11 +103,11 @@ class Login extends Component {
         function(error, x) {
           //check if account exists
           if (error) {
-            alert("Wrong");
+            alert("Something went wrong");
             return;
           }
           if (x === accounts[0]) {
-            alert("Login Successfull");
+            //alert("Login Successfull");
             sessionStorage.setItem('phoneNumber', this.state.phoneNumber)
             this.props.history.push("/dashboard");
             //get address from aadhaar number
@@ -128,7 +130,7 @@ class Login extends Component {
     //     function(result) {
     //       verifyLogin();
     //       //window.location.href = '/signin'
-    //       alert("success");
+    // //       alert("success");
     //     },
 
     //     function(error) {

@@ -55,6 +55,9 @@ class ViewTransactions extends Component {
         toBlock: "latest"
       },
       (err, events) => {
+        if(events.length == 0) {
+          return
+        }
         console.log("---events---");
         console.log("No of events", events.length);
         console.log("custom ", events[0].blockNumber);

@@ -80,7 +80,7 @@ class Register extends Component {
     //function handling the signup event
     event.preventDefault();
 
-    alert("In Signup");
+    //alert("In Signup");
     //getting phone number for the entered aadhaar number from firebase
     
     this.state.web3.eth.getAccounts((error, accounts) => {
@@ -90,17 +90,19 @@ class Register extends Component {
         { from: accounts[0] },
         function(error, x) {
           //check if account exists
-          alert(x)
+          //alert(x)
           if (error) {
-            alert("Wrong");
+            alert("There was some error. Please try again.");
             return;
           }
           if (x === "0x0000000000000000000000000000000000000000") {
             window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-              "recaptcha-container"
+              "recaptcha-container",{
+                //'size': 'invisible'
+              }
             );
             document.getElementById("OTP").style.display = "block";
-
+            
             //send OTP to the phone number
             firebaseApp
               .auth()
@@ -128,7 +130,7 @@ class Register extends Component {
 
     //getting active account from metamask
     this.state.web3.eth.getAccounts((error, accounts) => {
-      alert(accounts[0])
+      //alert(accounts[0])
       //call registerKey function from pgp.js
       this.subCurrencyContract.methods
       .register(this.state.userName, this.state.phoneNumber)
@@ -137,12 +139,17 @@ class Register extends Component {
           from: accounts[0],
           gasPrice: this.state.web3.utils.toHex(this.state.web3.utils.toWei("0", "gwei"))
         },
-        function(error, txHash) {
+        (error, txHash) => {
           if (!error) {
             console.log("tx: " + txHash);
-            alert("Transaction Hash:" + txHash);
-            alert("Registered Successfully");
-            window.location.reload(true);
+            if(txHash!=null) {
+              alert("Transaction Hash:" + txHash);
+              alert("Registered Successfully");
+              document.getElementById("register").reset()
+              document.getElementById("OTP").style.display = "none";
+
+            }
+            //window.location.reload(true);
           } 
           else 
             console.log(error);
@@ -184,7 +191,7 @@ class Register extends Component {
             <Col md="9" lg="7" xl="6">
               <Card className="mx-4">
                 <CardBody className="p-4">
-                  <Form onSubmit={this.SignUp}>
+                  <Form id="register" onSubmit={this.SignUp}>
                     <h1>Register</h1>
                     <p className="text-muted">Create your account</p>
                     <InputGroup className="mb-3">

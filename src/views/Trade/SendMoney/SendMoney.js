@@ -185,7 +185,7 @@ export class SendMoney extends Component {
           from: accounts[0],
           gasPrice: this.state.web3.utils.toHex(this.state.web3.utils.toWei("0", "gwei"))
         },
-        function(error, txHash) {
+        (error, txHash) => {
           if (!error) {
             console.log("tx: " + txHash);
             alert("Transaction Hash:" + txHash);
